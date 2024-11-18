@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin Rewards</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            background: radial-gradient(circle, #1a1a1a, #0d0d0d);
+            color: white;
+            overflow: hidden;
+        }
+
+        /* Container */
+        .container {
+            text-align: center;
+        }
+
+        /* Glow Effect for Text */
+        .title {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 
+                         0 0 30px rgba(255, 255, 255, 0.6), 
+                         0 0 45px rgba(255, 255, 255, 0.4);
+            margin-bottom: 40px;
+        }
+
+        /* Spin Button */
+        .spin-button {
+            position: relative;
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d0d0d;
+            background: linear-gradient(145deg, #f0f0f0, #d6d6d6);
+            border: none;
+            border-radius: 50px;
+            box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff, 
+                        0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .spin-button:hover {
+            background: linear-gradient(145deg, #ffffff, #e1e1e1);
+        }
+
+        /* Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .video-modal video {
+            width: 80%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Prize Display */
+        .prize-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 15px;
+            text-shadow: 0 0 10px white, 0 0 20px rgba(255, 255, 255, 0.5);
+            display: none;
+            z-index: 1100;
+        }
+
+        /* Reward Summary Modal */
+        .reward-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            z-index: 1200;
+        }
+
+        .reward-modal h2 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: underline;
+        }
+
+        .reward-modal ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .reward-modal li {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        .reward-modal .close-btn {
+            margin-top: 20px;
+            display: block;
+            background: white;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .reward-modal .close-btn:hover {
+            background: #ccc;
+        }
+
+         /* Prize Pool Preview Button */
+         .prize-pool-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            padding: 10px 20px;
+            background: linear-gradient(145deg, #f0f0f0, #d6d6d6);
+            border: none;
+            border-radius: 10px;
+            box-shadow: inset 2px 2px 5px #bebebe, inset -2px -2px 5px #ffffff, 
+                        0 0 10px rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .prize-pool-button:hover {
+            background: linear-gradient(145deg, #ffffff, #e1e1e1);
+        }
+
+        /* Prize Pool Modal */
+        .prize-pool-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            z-index: 1200;
+        }
+
+        .prize-pool-modal h2 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+            text-decoration: underline;
+        }
+
+        .prize-pool-modal ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            color: white;
+        }
+
+        .prize-pool-modal li {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .prize-pool-modal .close-btn {
+            margin-top: 20px;
+            display: block;
+            background: white;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .prize-pool-modal .close-btn:hover {
+            background: #ccc;
+        }
+
+        /* Skip Button */
+        .skip-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            background: linear-gradient(145deg, #f0f0f0, #d6d6d6);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: black;
+            box-shadow: inset 2px 2px 5px #bebebe, inset -2px -2px 5px #ffffff, 
+                        0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .skip-button:hover {
+            background: linear-gradient(145deg, #ffffff, #e1e1e1);
+        }
+
+        /* Zoom-in Animation */
+        @keyframes zoomInFadeOut {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            background: transparent;
+            font-size: 1rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+                         0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .footer span {
+            display: block;
+        }
+
+        .footer .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                         0 0 40px rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Spin the Wheel</div>
+        <button class="spin-button" onclick="showVideo()">Spin</button>
+    </div>
+
+    <!-- Prize Pool Preview Button -->
+    <button class="prize-pool-button" onclick="showPrizePool()">Prize Pool</button>
+
+    <!-- Prize Pool Modal -->
+    <div class="prize-pool-modal" id="prizePoolModal">
+        <h2>Prize Pool</h2>
+        <ul id="prizePoolList">
+            <!-- Prize list dynamically generated -->
+        </ul>
+        <button class="close-btn" onclick="closePrizePool()">Close</button>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <span class="close-btn" onclick="closeVideo()">&times;</span>
+        <video id="animaVideo" controls>
+            <source src="anima.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <button class="skip-button" onclick="skipVideo()">Skip</button>
+    </div>
+
+    <!-- Prize Display -->
+    <div class="prize-display" id="prizeDisplay">Prize</div>
+
+    <!-- Reward Summary Modal -->
+    <div class="reward-modal" id="rewardModal">
+        <h2>Reward Summary</h2>
+        <ul id="rewardList"></ul>
+        <button class="close-btn" onclick="closeSummary()">Close</button>
+    </div>
+
+    <script>
+        const prizes = ["Apple", "Orange", "Grape", "Melon", "Strawberry"];
+        const rate = [
+            { name: "Apple", rate: "30%" },
+            { name: "Orange", rate: "25%" },
+            { name: "Grape", rate: "20%" },
+            { name: "Melon", rate: "15%" },
+            { name: "Strawberry", rate: "5%" },
+            { name: "Oreo", rate: "5%" },
+        ];
+        const triggerTimes = [5, 7, 9, 11]; // Seconds when prizes appear
+        let currentTriggerIndex = 0;
+        let spunPrizes = []; // Store the prizes spun during the video
+
+        function showVideo() {
+            const videoModal = document.getElementById('videoModal');
+            const video = document.getElementById('animaVideo');
+            const prizeDisplay = document.getElementById('prizeDisplay');
+
+            videoModal.style.display = 'flex';
+            video.play();
+
+            // Show prizes at specific times
+            video.ontimeupdate = () => {
+                if (
+                    currentTriggerIndex < triggerTimes.length &&
+                    Math.floor(video.currentTime) === triggerTimes[currentTriggerIndex]
+                ) {
+                    const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                    spunPrizes.push(randomPrize);
+                    prizeDisplay.innerText = randomPrize;
+                    prizeDisplay.style.display = 'block';
+
+                    // Hide the prize display after 1 second
+                    setTimeout(() => {
+                        prizeDisplay.style.display = 'none';
+                    }, 1000);
+
+                    currentTriggerIndex++;
+                }
+            };
+
+            // When video ends, show reward summary
+            video.onended = () => {
+                closeVideo();
+                showSummary();
+            };
+        }
+
+        function showPrizePool() {
+            const prizePoolModal = document.getElementById('prizePoolModal');
+            const prizePoolList = document.getElementById('prizePoolList');
+            prizePoolList.innerHTML = ""; // Clear previous content
+
+            // Dynamically add prizes to the list
+            rate.forEach(prize => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${prize.name}</span> <span>${prize.rate}</span>`;
+                prizePoolList.appendChild(li);
+            });
+
+            prizePoolModal.style.display = 'block';
+        }
+
+        function skipVideo() {
+            spunPrizes = generateSkippedPrizes(); // Generate prizes for skipping
+            closeVideo();
+            showSummary();
+        }
+
+        function closePrizePool() {
+            const prizePoolModal = document.getElementById('prizePoolModal');
+            prizePoolModal.style.display = 'none';
+        }
+
+        function closeVideo() {
+            const videoModal = document.getElementById('videoModal');
+            const video = document.getElementById('animaVideo');
+            const prizeDisplay = document.getElementById('prizeDisplay');
+
+            videoModal.style.display = 'none';
+            video.pause();
+            video.currentTime = 0;
+
+            // Reset prize display
+            prizeDisplay.style.display = 'none';
+            currentTriggerIndex = 0;
+            video.ontimeupdate = null;
+        }
+
+        function generateSkippedPrizes() {
+            const prizesToGenerate = 4;
+            return Array.from({ length: prizesToGenerate }, () =>
+                prizes[Math.floor(Math.random() * prizes.length)]
+            );
+        }
+
+        function showSummary() {
+            const rewardModal = document.getElementById('rewardModal');
+            const rewardList = document.getElementById('rewardList');
+            rewardList.innerHTML = ""; // Clear previous rewards
+
+            spunPrizes.forEach(prize => {
+                const li = document.createElement('li');
+                li.innerText = prize;
+                rewardList.appendChild(li);
+            });
+
+            spunPrizes = []; // Clear spun prizes for the next spin
+            rewardModal.style.display = 'block';
+        }
+
+        function closeSummary() {
+            const rewardModal = document.getElementById('rewardModal');
+            rewardModal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
