@@ -1,1 +1,1 @@
-<a href="spin.html">
+<a class="button" href="spin.html">
