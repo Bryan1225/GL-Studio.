@@ -1,1 +1,3 @@
-<a class="button" href="spin.html">Spin</a>
+# GL-Studio
+
+<a class="button" href="spin.html">Test run</a>
