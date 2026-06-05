@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏代充服务 · 专业快速安全</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-light: #FFE866;
+    --gold-dark: #B8960C;
+    --red: #E8192C;
+    --red-dark: #A01020;
+    --bg-dark: #0A0A14;
+    --bg-card: #12121F;
+    --bg-card2: #1A1A2E;
+    --text: #F0EAD6;
+    --text-muted: #9090A8;
+    --border: rgba(255,215,0,0.15);
+    --glow: 0 0 20px rgba(255,215,0,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── Animated BG ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(232,25,44,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(255,215,0,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 50% 50%, rgba(10,10,20,0) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── Noise texture overlay ─── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+  }
+
+  nav .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.6rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-shadow: 0 0 18px rgba(255,215,0,0.5);
+  }
+
+  .logo span { color: var(--red); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+  }
+
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: box-shadow 0.2s, transform 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    box-shadow: 0 0 18px rgba(232,25,44,0.5);
+    transform: translateY(-1px);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    padding: 100px 0 80px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg-lines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 119px,
+      rgba(255,215,0,0.03) 120px
+    );
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(232,25,44,0.15);
+    border: 1px solid rgba(232,25,44,0.4);
+    color: #FF6B7A;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(2.8rem, 8vw, 5.5rem);
+    line-height: 1.1;
+    color: var(--text);
+    animation: fadeInDown 0.7s ease 0.1s both;
+  }
+
+  .hero h1 .accent {
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(255,215,0,0.4);
+  }
+
+  .hero h1 .accent2 { color: var(--red); }
+
+  .hero-sub {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    animation: fadeInDown 0.7s ease 0.2s both;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 28px;
+    animation: fadeInDown 0.7s ease 0.3s both;
+  }
+
+  .tag {
+    background: rgba(255,215,0,0.07);
+    border: 1px solid rgba(255,215,0,0.2);
+    color: var(--gold-light);
+    padding: 6px 16px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-cta {
+    margin-top: 40px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInDown 0.7s ease 0.4s both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #E8192C, #A01020);
+    color: white;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px rgba(232,25,44,0.35);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(232,25,44,0.5);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid rgba(255,215,0,0.4);
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255,215,0,0.07);
+    border-color: var(--gold);
+    box-shadow: var(--glow);
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,215,0,0.02);
+    padding: 24px 0;
+    margin-bottom: 80px;
+  }
+
+  .stats-bar .inner {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .stat { text-align: center; }
+
+  .stat-num {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 2rem;
+    color: var(--gold);
+    text-shadow: 0 0 12px rgba(255,215,0,0.3);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { margin-bottom: 80px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .section-header::before {
+    content: '';
+    width: 4px;
+    height: 36px;
+    background: linear-gradient(180deg, var(--gold), var(--red));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.9rem;
+    color: var(--text);
+  }
+
+  .section-title span { color: var(--gold); }
+
+  .section-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* ─── SERVICE GRID ─── */
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .service-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .service-card:hover {
+    border-color: rgba(255,215,0,0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,215,0,0.1);
+    background: var(--bg-card2);
+  }
+
+  .service-card:hover::before { opacity: 1; }
+
+  .service-icon {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .service-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .service-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .service-badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: rgba(232,25,44,0.2);
+    border: 1px solid rgba(232,25,44,0.4);
+    color: #FF6B7A;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  .service-badge.hot {
+    background: rgba(255,215,0,0.1);
+    border-color: rgba(255,215,0,0.3);
+    color: var(--gold);
+  }
+
+  /* ─── PRICE TABLE ─── */
+  .price-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .price-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .price-tab:hover {
+    border-color: rgba(255,215,0,0.3);
+    color: var(--gold-light);
+  }
+
+  .price-tab.active {
+    background: rgba(255,215,0,0.1);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .price-panel { display: none; }
+  .price-panel.active { display: block; }
+
+  .price-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .price-table th {
+    background: rgba(255,215,0,0.05);
+    color: var(--gold);
+    font-weight: 600;
+    padding: 12px 16px;
+    text-align: left;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.78rem;
+  }
+
+  .price-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(255,215,0,0.05);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  .price-table tr:last-child td { border-bottom: none; }
+
+  .price-table tr:hover td { background: rgba(255,215,0,0.03); }
+
+  .price-amount {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .price-original {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-size: 0.78rem;
+    margin-left: 6px;
+  }
+
+  .price-tag {
+    display: inline-block;
+    background: rgba(232,25,44,0.15);
+    border: 1px solid rgba(232,25,44,0.3);
+    color: #FF6B7A;
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 2px;
+    margin-left: 8px;
+  }
+
+  .price-tag.popular {
+    background: rgba(255,215,0,0.1);
+    border-color: rgba(255,215,0,0.3);
+    color: var(--gold);
+  }
+
+  .price-note {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(255,215,0,0.04);
+    border: 1px solid rgba(255,215,0,0.12);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    counter-reset: step;
+  }
+
+  .step-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 20px 24px;
+    position: relative;
+    counter-increment: step;
+    overflow: hidden;
+  }
+
+  .step-card::after {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    bottom: -10px; right: 10px;
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 4rem;
+    color: rgba(255,215,0,0.05);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .step-icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+
+  .step-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .step-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ─── CONTACT ─── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  .contact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    transition: all 0.25s;
+  }
+
+  .contact-card:hover {
+    border-color: rgba(255,215,0,0.3);
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+  }
+
+  .contact-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    background: rgba(255,215,0,0.07);
+    border: 1px solid rgba(255,215,0,0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .contact-info h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .contact-info p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .contact-info a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .contact-info a:hover { text-shadow: 0 0 10px rgba(255,215,0,0.4); }
+
+  /* ─── NOTICE BOX ─── */
+  .notice-box {
+    background: linear-gradient(135deg, rgba(232,25,44,0.08), rgba(232,25,44,0.03));
+    border: 1px solid rgba(232,25,44,0.25);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 30px;
+    font-size: 0.85rem;
+    color: #FFAAAA;
+    line-height: 1.8;
+  }
+
+  .notice-box strong {
+    color: var(--red);
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* ─── ORDER BOX ─── */
+  .order-box {
+    background: linear-gradient(135deg, var(--bg-card2), var(--bg-card));
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 12px;
+    padding: 36px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .order-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,215,0,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .order-box h2 {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 2rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255,215,0,0.3);
+  }
+
+  .order-box p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .wechat-id {
+    display: inline-block;
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.25);
+    border-radius: 6px;
+    padding: 14px 32px;
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.5rem;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 12px rgba(255,215,0,0.3);
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: all;
+  }
+
+  .wechat-id:hover {
+    background: rgba(255,215,0,0.12);
+    box-shadow: 0 0 24px rgba(255,215,0,0.2);
+  }
+
+  .order-steps-mini {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .mini-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .mini-step .num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.25);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .mini-step-arrow {
+    color: rgba(255,215,0,0.25);
+    font-size: 0.7rem;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 36px 0 24px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    letter-spacing: 1px;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,215,0,0.15), transparent);
+    margin: 0 0 80px;
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 760px) {
+    nav ul { display: none; }
+    .service-grid { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .order-box { padding: 28px 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .service-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+  }
+
+  /* ─── SCROLL TOP ─── */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--gold);
+    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  .scroll-top.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .scroll-top:hover {
+    background: rgba(255,215,0,0.18);
+    box-shadow: 0 0 14px rgba(255,215,0,0.25);
+  }
+
+  /* Copy toast */
+  .toast {
+    position: fixed;
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(255,215,0,0.15);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <div class="logo">⚔️ 代充<span>工作室</span></div>
+    <ul>
+      <li><a href="#services">服务项目</a></li>
+      <li><a href="#prices">价格表</a></li>
+      <li><a href="#how">下单流程</a></li>
+      <li><a href="#contact">联系我们</a></li>
+      <li><a href="#order" class="nav-cta">立即下单</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-lines"></div>
+  <div class="container">
+    <div class="hero-badge">🎮 微信游戏代充 · 专业可靠 · 快速到账</div>
+    <h1>游戏充值<br><span class="accent">一站式</span><span class="accent2">服务</span></h1>
+    <p class="hero-sub">王者荣耀 · 和平精英 · 皮肤代送 · 支付宝微信充值 · 抖音抖币</p>
+    <div class="hero-tags">
+      <span class="tag">🏆 价格实惠</span>
+      <span class="tag">⚡ 极速到账</span>
+      <span class="tag">🔒 安全保障</span>
+      <span class="tag">💬 微信客服</span>
+      <span class="tag">📱 7×24小时</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#order" class="btn-primary">📲 立即下单</a>
+      <a href="#prices" class="btn-secondary">💰 查看价格表</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="inner">
+    <div class="stat">
+      <div class="stat-num">5000+</div>
+      <div class="stat-label">累计服务客户</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">游戏业务类型</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5分钟</div>
+      <div class="stat-label">平均到账时间</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">正规安全有保障</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SERVICES -->
+  <section id="services" class="fade-in">
+    <div class="section-header">
+      <div>
+        <div class="section-title">服务<span>项目</span></div>
+        <div class="section-desc">覆盖主流游戏及平台充值，欢迎咨询其他业务</div>
+      </div>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-card">
+        <span class="service-badge hot">🔥 热门</span>
+        <span class="service-icon">👑</span>
+        <div class="service-name">王者荣耀 代充</div>
+        <div class="service-desc">点券直充，皮肤代抽，代送皮肤，国服/体验服均可。价格比官方更优惠。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-badge hot">🔥 热门</span>
+        <span class="service-icon">🎖️</span>
+        <div class="service-name">和平精英 代充</div>
+        <div class="service-desc">UC直充，特战令购买，套装皮肤代抽，CP代抽代送，快速到账。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-badge">🎨 皮肤</span>
+        <span class="service-icon">🎁</span>
+        <div class="service-name">皮肤代送服务</div>
+        <div class="service-desc">指定皮肤代为赠送，只需提供目标账号，全程由我们操作，安全便捷。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-badge">🎰 代抽</span>
+        <span class="service-icon">🃏</span>
+        <div class="service-name">皮肤代抽服务</div>
+        <div class="service-desc">代抽限定皮肤、返场皮肤，支持多种热门游戏，价格透明无隐费。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💚</span>
+        <div class="service-name">微信 人民币充值</div>
+        <div class="service-desc">微信余额充值服务，汇率优惠，快速到账，安全可靠。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">💛</span>
+        <div class="service-name">支付宝 充值</div>
+        <div class="service-desc">支付宝余额充值，适合无法直接充值的用户，价格实惠，服务稳定。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🎵</span>
+        <div class="service-name">抖音抖币 充值</div>
+        <div class="service-desc">抖音抖币代充，直播间刷礼物专用，价格低于官方，大量购买另有优惠。</div>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🎮</span>
+        <div class="service-name">其他游戏业务</div>
+        <div class="service-desc">原神、崩坏系列、英雄联盟、PUBG、DNF等多款游戏均可代充，欢迎咨询。</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PRICES -->
+  <section id="prices" class="fade-in">
+    <div class="section-header">
+      <div>
+        <div class="section-title">价格<span>参考</span></div>
+        <div class="section-desc">以下为参考价，实际优惠请咨询客服 · 大量购买可议价</div>
+      </div>
+    </div>
+
+    <div class="notice-box">
+      <strong>⚠️ 重要说明</strong>
+      价格仅供参考，实际以下单时客服报价为准。节假日及特殊活动期间可能有所调整。<br>
+      如需大量充值或长期合作，欢迎单独联系客服，享受更多折扣优惠。
+    </div>
+
+    <div class="price-tabs">
+      <button class="price-tab active" onclick="showTab('wangzhe')">👑 王者荣耀</button>
+      <button class="price-tab" onclick="showTab('heping')">🎖️ 和平精英</button>
+      <button class="price-tab" onclick="showTab('douyin')">🎵 抖音抖币</button>
+      <button class="price-tab" onclick="showTab('zhifu')">💳 支付充值</button>
+    </div>
+
+    <!-- 王者荣耀 -->
+    <div class="price-panel active" id="tab-wangzhe">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>充值内容</th>
+            <th>点券数量</th>
+            <th>代充价格</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>小额点券</td>
+            <td>50点券</td>
+            <td class="price-amount">¥4.5 <span class="price-original">¥5</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>基础充值</td>
+            <td>100点券</td>
+            <td class="price-amount">¥9 <span class="price-original">¥10</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>常规充值</td>
+            <td>300点券</td>
+            <td class="price-amount">¥26 <span class="price-original">¥30</span></td>
+            <td><span class="price-tag popular">推荐</span></td>
+          </tr>
+          <tr>
+            <td>中量充值</td>
+            <td>600点券</td>
+            <td class="price-amount">¥50 <span class="price-original">¥60</span></td>
+            <td><span class="price-tag popular">热销</span></td>
+          </tr>
+          <tr>
+            <td>大额充值</td>
+            <td>1000点券</td>
+            <td class="price-amount">¥82 <span class="price-original">¥100</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>豪华充值</td>
+            <td>3000点券</td>
+            <td class="price-amount">¥240 <span class="price-original">¥300</span></td>
+            <td><span class="price-tag">优惠</span></td>
+          </tr>
+          <tr>
+            <td>皮肤代送</td>
+            <td>一件皮肤</td>
+            <td class="price-amount">面议</td>
+            <td>请咨询客服</td>
+          </tr>
+          <tr>
+            <td>皮肤代抽</td>
+            <td>—</td>
+            <td class="price-amount">面议</td>
+            <td>视皮肤类型定价</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="price-note">
+        💡 以上价格为参考价，实际优惠请联系客服确认。支持微信/支付宝付款。充值完成后约 <strong style="color:var(--gold)">3–10分钟</strong> 到账，节假日可能稍慢。
+      </div>
+    </div>
+
+    <!-- 和平精英 -->
+    <div class="price-panel" id="tab-heping">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>充值内容</th>
+            <th>UC数量</th>
+            <th>代充价格</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>小额UC</td>
+            <td>60 UC</td>
+            <td class="price-amount">¥5.5 <span class="price-original">¥6</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>基础UC</td>
+            <td>300 UC</td>
+            <td class="price-amount">¥26 <span class="price-original">¥30</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>常规UC</td>
+            <td>600 UC</td>
+            <td class="price-amount">¥50 <span class="price-original">¥60</span></td>
+            <td><span class="price-tag popular">推荐</span></td>
+          </tr>
+          <tr>
+            <td>大额UC</td>
+            <td>1500 UC</td>
+            <td class="price-amount">¥118 <span class="price-original">¥150</span></td>
+            <td><span class="price-tag popular">热销</span></td>
+          </tr>
+          <tr>
+            <td>特战令</td>
+            <td>季卡</td>
+            <td class="price-amount">¥28 <span class="price-original">¥30</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>套装/皮肤代抽</td>
+            <td>—</td>
+            <td class="price-amount">面议</td>
+            <td>请咨询客服</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="price-note">
+        💡 和平精英支持国服UC直充。充值前请确认您的游戏区服，避免充错。
+      </div>
+    </div>
+
+    <!-- 抖音抖币 -->
+    <div class="price-panel" id="tab-douyin">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>充值金额</th>
+            <th>抖币数量</th>
+            <th>代充价格</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>小额</td>
+            <td>100抖币</td>
+            <td class="price-amount">¥9 <span class="price-original">¥10</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>中额</td>
+            <td>500抖币</td>
+            <td class="price-amount">¥43 <span class="price-original">¥50</span></td>
+            <td><span class="price-tag popular">推荐</span></td>
+          </tr>
+          <tr>
+            <td>大额</td>
+            <td>1000抖币</td>
+            <td class="price-amount">¥85 <span class="price-original">¥100</span></td>
+            <td><span class="price-tag popular">热销</span></td>
+          </tr>
+          <tr>
+            <td>超大额</td>
+            <td>5000抖币</td>
+            <td class="price-amount">¥415 <span class="price-original">¥500</span></td>
+            <td><span class="price-tag">优惠</span></td>
+          </tr>
+          <tr>
+            <td>批量定制</td>
+            <td>10000抖币以上</td>
+            <td class="price-amount">面议</td>
+            <td>另有优惠</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="price-note">
+        💡 抖音抖币适合直播间打赏送礼，批量购买享更多折扣，欢迎长期合作。
+      </div>
+    </div>
+
+    <!-- 支付充值 -->
+    <div class="price-panel" id="tab-zhifu">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>充值类型</th>
+            <th>充值金额</th>
+            <th>手续费</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>支付宝充值</td>
+            <td>任意金额</td>
+            <td class="price-amount">3%–5%</td>
+            <td>视金额定</td>
+          </tr>
+          <tr>
+            <td>微信充值</td>
+            <td>任意金额</td>
+            <td class="price-amount">3%–5%</td>
+            <td>视金额定</td>
+          </tr>
+          <tr>
+            <td>大额批量</td>
+            <td>1000元以上</td>
+            <td class="price-amount">面议</td>
+            <td><span class="price-tag popular">更优惠</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="price-note">
+        💡 支付充值服务适合无法直接操作的用户。具体手续费率以客服报价为准，大额转账另有优惠。
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="fade-in">
+    <div class="section-header">
+      <div>
+        <div class="section-title">下单<span>流程</span></div>
+        <div class="section-desc">简单四步，快速完成充值</div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-icon">💬</div>
+        <div class="step-title">第一步：联系客服</div>
+        <div class="step-desc">通过微信联系客服，告知需要充值的游戏名称和充值配套，获取最新报价。</div>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">📋</div>
+        <div class="step-title">第二步：提供账号</div>
+        <div class="step-desc">根据客服指示，提供游戏账号 ID 或所需信息（皮肤代送需添加我方账号为好友）。</div>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">💸</div>
+        <div class="step-title">第三步：完成付款</div>
+        <div class="step-desc">通过微信或支付宝完成付款，截图发给客服确认。</div>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">✅</div>
+        <div class="step-title">第四步：等待到账</div>
+        <div class="step-desc">收到付款后我们会立即处理，一般 3–10 分钟内完成，到账后通知您。</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ORDER -->
+  <section id="order" class="fade-in">
+    <div class="order-box">
+      <h2>🎮 立即下单</h2>
+      <p>添加以下微信联系客服，告知充值项目即可开始下单。<br>营业时间：全天 7×24 小时，随时在线为您服务。</p>
+      <div class="wechat-id" onclick="copyWechat(this)" title="点击复制微信号">
+        微信号：<span id="wechat-text">your_wechat_id</span>
+      </div>
+      <br>
+      <a href="weixin://" class="btn-primary" style="display:inline-flex">📲 打开微信联系</a>
+      <div class="order-steps-mini">
+        <div class="mini-step"><span class="num">1</span> 添加微信</div>
+        <div class="mini-step-arrow">›</div>
+        <div class="mini-step"><span class="num">2</span> 报告项目</div>
+        <div class="mini-step-arrow">›</div>
+        <div class="mini-step"><span class="num">3</span> 付款确认</div>
+        <div class="mini-step-arrow">›</div>
+        <div class="mini-step"><span class="num">4</span> 到账通知</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section id="contact" class="fade-in">
+    <div class="section-header">
+      <div>
+        <div class="section-title">联系<span>我们</span></div>
+        <div class="section-desc">多渠道在线，随时为您解答</div>
+      </div>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">💬</div>
+        <div class="contact-info">
+          <h3>微信客服</h3>
+          <p>主要联系方式，直接添加好友即可下单<br><a href="#order">微信号：your_wechat_id</a></p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">📱</div>
+        <div class="contact-info">
+          <h3>微信小店</h3>
+          <p>可在微信小店下单，方便快捷<br><a href="#">点击访问小店</a></p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">⏰</div>
+        <div class="contact-info">
+          <h3>营业时间</h3>
+          <p>全天 7 × 24 小时<br>节假日正常营业，随时在线</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">🔒</div>
+        <div class="contact-info">
+          <h3>安全保障</h3>
+          <p>正规代充，先付款后充值，到账截图为证。问题件全额退款，信誉保障。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚔️ 代充<span>工作室</span></div>
+  <div class="footer-text">
+    © 2025 游戏代充工作室 · 专业微信游戏代充服务<br>
+    如有问题请联系微信客服 · 价格以客服实时报价为准
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ 微信号已复制！</div>
+
+<script>
+  // Tab switching
+  function showTab(id) {
+    document.querySelectorAll('.price-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.price-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Copy wechat
+  function copyWechat(el) {
+    const text = document.getElementById('wechat-text').textContent;
+    navigator.clipboard.writeText(text).catch(() => {});
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  // Scroll observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Scroll top button
+  window.addEventListener('scroll', () => {
+    document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+  });
+</script>
+</body>
+</html>
